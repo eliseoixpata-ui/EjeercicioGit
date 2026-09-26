@@ -12,13 +12,25 @@ public class empleado {
     int id;
     String Nombre;
     
-    public empleado(){
-        this.id=0;
-        this.Nombre="";
-    }
 
     public empleado(int id, String Nombre) {
         this.id = id;
+        this.Nombre = Nombre;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getNombre() {
+        return Nombre;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public void setNombre(String Nombre) {
         this.Nombre = Nombre;
     }
             
