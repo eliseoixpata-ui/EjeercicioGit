@@ -1,0 +1,6 @@
+/build/
+/dist/
+*.calss
+*.jar
+*.war
+/nbproject/private/
