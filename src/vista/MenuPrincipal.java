@@ -68,6 +68,7 @@ public class MenuPrincipal extends javax.swing.JFrame {
         btnConciertos.addActionListener(this::btnConciertosActionPerformed);
 
         btnLocalidades.setText("Localidades");
+        btnLocalidades.addActionListener(this::btnLocalidadesActionPerformed);
 
         btnInventario.setText("Inventario");
 
@@ -171,6 +172,12 @@ public class MenuPrincipal extends javax.swing.JFrame {
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
          System.exit(0);
     }//GEN-LAST:event_btnSalirActionPerformed
+
+    private void btnLocalidadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLocalidadesActionPerformed
+       jpLocalidades localidad = new jpLocalidades();
+       
+       mostrarPanel(localidad);
+    }//GEN-LAST:event_btnLocalidadesActionPerformed
 
     /**
      * @param args the command line arguments
