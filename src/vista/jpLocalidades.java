@@ -9,6 +9,11 @@ import java.util.List;
 import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.RowFilter;
+import javax.swing.table.TableRowSorter;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import java.util.regex.Pattern;
 
 /**
  *
@@ -22,27 +27,81 @@ public class jpLocalidades extends javax.swing.JPanel {
      */
     public jpLocalidades() {
         initComponents();
+        txtID.setEditable(false);
+        txtID.setText("Automático");
         
         localidadController = new LocalidadController();
         
         cargarTabla();
     }
     public void cargarTabla (){
-        DefaultTableModel modelo = (DefaultTableModel )tblLocalidades.getModel();
-        modelo.setRowCount(0);
+        DefaultTableModel modelo = new DefaultTableModel();
+
+        modelo.addColumn("ID");
+        modelo.addColumn("Nombre");
+
         List<Localidad> lista = localidadController.listar();
-        
-        for ( Localidad localidad : lista ){
-            Object[]fila ={
+
+        for (Localidad localidad : lista) {
+
+            Object[] fila = {
                 localidad.getIdLocalidad(),
                 localidad.getNombre()
             };
-            modelo.addRow(fila);    
-        }
+
+            modelo.addRow(fila);
+            tblLocalidades.setModel(modelo);
+            configurarBusqueda();
     }
-    private void limpiarCampos(){
-        txtID.setText("");
+
+    tblLocalidades.setModel(modelo);
+    }
+    private void limpiarCampos() {
+        txtID.setText("Automático");
         txtNombre.setText("");
+        tblLocalidades.clearSelection();
+    }
+    private void configurarBusqueda() {
+
+        DefaultTableModel modelo =
+                (DefaultTableModel) tblLocalidades.getModel();
+
+        TableRowSorter<DefaultTableModel> sorter =
+                new TableRowSorter<>(modelo);
+
+        tblLocalidades.setRowSorter(sorter);
+
+        txtBuscar.getDocument().addDocumentListener(new DocumentListener() {
+
+            private void buscar() {
+                String texto = txtBuscar.getText().trim();
+
+                if (texto.isEmpty()) {
+                    sorter.setRowFilter(null);
+                } else {
+                    sorter.setRowFilter(
+                        RowFilter.regexFilter(
+                            "(?i)" + Pattern.quote(texto)
+                        )
+                    );
+                }
+            }
+
+            @Override
+            public void insertUpdate(DocumentEvent e) {
+                buscar();
+            }
+
+            @Override
+            public void removeUpdate(DocumentEvent e) {
+                buscar();
+            }
+
+            @Override
+            public void changedUpdate(DocumentEvent e) {
+                buscar();
+            }
+        });
     }
            
 
@@ -222,6 +281,10 @@ public class jpLocalidades extends javax.swing.JPanel {
             JOptionPane.showMessageDialog(this, "Ingrese el Nombre de la localidad");
             return; 
         }
+        if (txtID.getText().equals("Automático")) {
+            JOptionPane.showMessageDialog(this, "Seleccione una localidad");
+            return;
+        }
         Localidad localidad = new Localidad();
         
         localidad.setIdLocalidad(Integer.parseInt(txtID.getText()));
@@ -243,6 +306,10 @@ public class jpLocalidades extends javax.swing.JPanel {
            JOptionPane.showMessageDialog(this, " Seleccione una Localidad");
            return; 
        }
+       if (txtID.getText().equals("Automático")) {
+            JOptionPane.showMessageDialog(this, "Seleccione una localidad");
+            return;
+        }
        int respuesta = JOptionPane.showConfirmDialog(
             this,
             "¿Desea eliminar esta localidad?",

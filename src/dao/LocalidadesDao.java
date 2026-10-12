@@ -21,53 +21,52 @@ public class LocalidadesDao {
     CreateConecction connFactory = new CreateConecction();
     
     public boolean guardar (Localidad localidad){
-        String sql = "INSERT INTO localidades (nombre) VAlUES (?)";
-        
-        Connection conn = connFactory.getConecction();
-        
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            
+       String sql = "INSERT INTO localidades (nombre) VALUES (?)";
+
+        try (Connection conn = connFactory.getConecction();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setString(1, localidad.getNombre());
-            return true;
-        }catch(SQLException e){
-            System.out.println(" Error al guardar: " + e.getMessage());
+
+            int filas = ps.executeUpdate();
+
+            return filas > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error al guardar: " + e.getMessage());
             return false;
-            
         }
     }
     public boolean actualizar (Localidad localidad ){
-        String sql = "UPDATE localidades"
-                +"SET nombre = ?"
-                +"WHERE id_localidad = ? ";
-        Connection conn = connFactory.getConecction();
-        try{
-            PreparedStatement ps = conn.prepareStatement(sql);
-            
+        String sql = "UPDATE localidades SET nombre = ? WHERE id_localidad = ?";
+
+        try (Connection conn = connFactory.getConecction();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setString(1, localidad.getNombre());
-            ps.setInt(1, localidad.getIdLocalidad());
-            ps.executeUpdate();
-            return true; 
-        }catch (SQLException e){
-            System.out.println(" Error al actualizar" + e.getMessage());
+            ps.setInt(2, localidad.getIdLocalidad());
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error al actualizar: " + e.getMessage());
             return false;
-        }       
+        }
     }
     public boolean eliminar (int id ){
-        String sql = "DELETE FROM   localidades "
-                +"WHERE id_localidades = ?";
-        Connection conn = connFactory.getConecction();
-         try{
-             PreparedStatement ps = conn.prepareStatement(sql);
-             
-             ps.setInt(1, id);
-             
-             ps.executeUpdate();
-             return true ;
-         }catch(SQLException e){
-             System.out.println(" Error al eliminar" + e.getMessage());
-             return false;
-         }         
+        String sql = "DELETE FROM localidades WHERE id_localidad = ?";
+
+        try (Connection conn = connFactory.getConecction();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+
+            return ps.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar: " + e.getMessage());
+            return false;
+        }
     }
     public  List<Localidad> listar(){
         List <Localidad> lista=  new ArrayList<>();
